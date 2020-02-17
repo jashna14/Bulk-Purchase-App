@@ -9,7 +9,7 @@ export default class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            user_type: "customer"
+            user_type: "vendor"
         }
 
         this.onChangeUsername = this.onChangeUsername.bind(this);

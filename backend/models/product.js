@@ -12,7 +12,11 @@ let Product = new mongoose.Schema({
     },
     vendor: {
     	type: String
+    },
+    status: {
+    	type: Number
     }
+
 
 });
 

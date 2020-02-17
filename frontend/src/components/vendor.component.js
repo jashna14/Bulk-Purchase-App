@@ -10,9 +10,11 @@ export default class Vendor extends Component {
             name: '',
             price: '',
             quantity: '',
+            status: '0',
             vendor: this.props.location.vendor,
             rendor: '0',
-            products: []
+            products: [],
+            ready_products: []
         }
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
@@ -35,18 +37,6 @@ export default class Vendor extends Component {
         this.setState({rendor : '1'});
     }
 
-    // allProduct(event) {
-    //     axios.get(`http://localhost:4000/list/:${this.state.vendor}`)
-    //          .then(response => {
-    //             this.setState({products: response.data});
-    //          })
-    //          .catch(function(error) {
-    //              console.log(error);
-    //          })
-    //     this.setState({rendor : '2'});
-
-    // }
-
     allProduct = (e) => {
         axios.get(`http://localhost:4000/list/:${this.state.vendor}`)
              .then(response => {
@@ -57,6 +47,64 @@ export default class Vendor extends Component {
              })
         this.setState({rendor : '2'});
 
+    }
+
+    Productready = (e) => {
+        const newProduct = {
+            vendor: this.state.vendor,
+            status: '1'
+            }
+
+        axios.post('http://localhost:4000/product_ready', newProduct)
+            .then(response => {
+                this.setState({ready_products: response.data});
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+        this.setState({rendor : '3'});
+
+    }
+
+    Delete = (e,Pid) => {
+        const pid = {
+            id: Pid
+        }
+        axios.post('http://localhost:4000/delete_product', pid)
+        .then(response => {
+            axios.get(`http://localhost:4000/list/:${this.state.vendor}`)
+            .then(response => {
+                this.setState({products: response.data});
+            })
+            .catch(function(error) {
+                 console.log(error);
+            })            
+        })
+    }
+
+    Dispatch = (e,Pid) => {
+        console.log(Pid)
+
+        const pid = {
+            id: Pid
+        }
+        console.log("lalalalallala22222222")
+        axios.post('http://localhost:4000/dispatch_product', pid)
+        .then(response => {
+            console.log("lalalalallala")
+            const newProduct = {
+            vendor: this.state.vendor,
+            status: '1'
+            }
+            axios.post('http://localhost:4000/product_ready', newProduct)
+            .then(response => {
+                console.log('yeyeyyeyeyeye')
+                this.setState({ready_products: response.data});
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+        })
     }
 
     Logout = (e) => {
@@ -71,8 +119,9 @@ export default class Vendor extends Component {
         const newProduct = {
             name: this.state.name,
             price: this.state.price,
-            quantity: this.state.quantity,
-            vendor: this.state.vendor
+            quantity: parseInt(this.state.quantity),
+            vendor: this.state.vendor,
+            status: this.state.status
         }
 
         axios.post('http://localhost:4000/add_product', newProduct)
@@ -98,6 +147,10 @@ export default class Vendor extends Component {
             return this.render3();
         }
 
+        else if (this.state.rendor === '3') {
+            return this.render4();
+        }
+
     }
 
     render1() {
@@ -105,8 +158,8 @@ export default class Vendor extends Component {
             <div>
                 <button onClick = {e => this.addProduct(e)}>Add Product</button>
                 <button onClick = {e => this.allProduct(e)}>All Products</button>
-                <button >Product ready to dispatch</button>
-                <button >Dispatched product</button>
+                <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
+                <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
                 <button onClick = {e => this.Logout(e)}>Logout</button>
             </div>   
         )
@@ -118,8 +171,8 @@ export default class Vendor extends Component {
                 <div>
                     <button onClick = {e => this.addProduct(e)}>Add Product</button>
                     <button onClick = {e => this.allProduct(e)}>All Products</button>
-                    <button >Product ready to dispatch</button>
-                    <button >Dispatched product</button>
+                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
+                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
                     <button onClick = {e => this.Logout(e)}>Logout</button>
                 </div>    
                 <div>  
@@ -164,13 +217,10 @@ export default class Vendor extends Component {
                 <div>
                     <button onClick = {e => this.addProduct(e)}>Add Product</button>
                     <button onClick = {e => this.allProduct(e)}>All Products</button>
-                    <button >Product ready to dispatch</button>
-                    <button >Dispatched product</button>
+                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
+                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
                     <button onClick = {e => this.Logout(e)}>Logout</button>
                 </div>    
-                <div>
-                    <h1>hello</h1>  
-                </div>
                 <div>
                     <table className="table table-striped">
                     <thead>
@@ -178,6 +228,7 @@ export default class Vendor extends Component {
                             <th>Name</th>
                             <th>Price</th>
                             <th>Quantity</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -188,6 +239,88 @@ export default class Vendor extends Component {
                                     <td>{currentProduct.name}</td>
                                     <td>{currentProduct.price}</td>
                                     <td>{currentProduct.quantity}</td>
+                                    <td> <button onClick = {e => this.Delete(e,currentProduct._id)}> Delete </button> </td>
+                                </tr>
+                            )
+                        })
+                    }
+                    </tbody>
+                </table>
+                </div>
+            </div>       
+        )
+    }
+
+    render4() {
+        return (
+            <div>
+                <div>
+                    <button onClick = {e => this.addProduct(e)}>Add Product</button>
+                    <button onClick = {e => this.allProduct(e)}>All Products</button>
+                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
+                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
+                    <button onClick = {e => this.Logout(e)}>Logout</button>
+                </div>    
+                <div>
+                    <table className="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Dispatch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    { 
+                        this.state.ready_products.map((currentProduct, i) => {
+                            return (
+                                <tr>
+                                    <td>{currentProduct.name}</td>
+                                    <td>{currentProduct.price}</td>
+                                    <td>{currentProduct.quantity}</td>
+                                    <td> <button onClick = {e => this.Dispatch(e,currentProduct._id)}> Dispatch </button> </td>
+                                </tr>
+                            )
+                        })
+                    }
+                    </tbody>
+                </table>
+                </div>
+            </div>       
+        )
+    }
+
+
+    render4() {
+        return (
+            <div>
+                <div>
+                    <button onClick = {e => this.addProduct(e)}>Add Product</button>
+                    <button onClick = {e => this.allProduct(e)}>All Products</button>
+                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
+                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
+                    <button onClick = {e => this.Logout(e)}>Logout</button>
+                </div>    
+                <div>
+                    <table className="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    { 
+                        this.state.ready_products.map((currentProduct, i) => {
+                            return (
+                                <tr>
+                                    <td>{currentProduct.name}</td>
+                                    <td>{currentProduct.price}</td>
+                                    <td>{currentProduct.quantity}</td>
+                                    <td> <button onClick = {e => this.Dispatch(e,currentProduct._id)}> Dispatch </button> </td>
                                 </tr>
                             )
                         })

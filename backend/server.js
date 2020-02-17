@@ -47,7 +47,6 @@ userRoutes.route('/add').post(function(req, res) {
 
 // Adding a new product
 userRoutes.route('/add_product').post(function(req, res) {
-    console.log(req.body);
 
     let product = new Product(req.body);
     product.save()
@@ -57,6 +56,43 @@ userRoutes.route('/add_product').post(function(req, res) {
         .catch(err => {
             res.status(400).send('Error');
         });
+});
+
+// Delete a product
+userRoutes.route('/delete_product').post(function(req, res) {
+    Product.findByIdAndRemove(req.body.id,function(err, product) {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(product);
+            res.json(product);
+        }
+    })
+});
+
+// Dispatch a product
+userRoutes.route('/dispatch_product').post(function(req, res) {
+    console.log(req.body)
+    Product.updateOne({_id:`${req.body.id}`}, {status: '2'},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+
+    });
+});
+
+//finding ready to dispatch products
+userRoutes.route('/product_ready').post(function(req, res) {
+    Product.find({vendor: `${req.body.vendor}`,status: `${req.body.status}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
 });
 
 // Getting all the products
