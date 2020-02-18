@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css"
+import './jh.css'
 
 export default class Login extends Component {
     
@@ -69,9 +72,35 @@ export default class Login extends Component {
         });
     }
 
+
+    Toggleapp = (e) => {
+        this.props.history.push({
+            pathname: '/',
+        });
+    };
+
+
+    Togglelogin = (e) => {
+        this.props.history.push({
+            pathname: '/login',
+        });
+    };
+
+
+    Toggleregister = (e) => {
+        this.props.history.push({
+            pathname: '/register',
+        });
+    };
+
     render() {
         return (
-            <div>
+            <div className="container">
+                <div class="topnav">
+                    <a onClick = {e => this.Toggleapp(e)} href="/">App</a>
+                    <a onClick = {e => this.Togglelogin(e)} class="active" href="/login">Login</a>
+                    <a onClick = {e => this.Toggleregister(e)} href="/register">Register</a>
+                </div>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Username: </label>

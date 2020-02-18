@@ -18,9 +18,35 @@ export default class UsersList extends Component {
              })
     }
 
+    Toggleapp = (e) => {
+        this.props.history.push({
+            pathname: '/',
+        });
+    };
+
+
+    Togglelogin = (e) => {
+        this.props.history.push({
+            pathname: '/login',
+        });
+    };
+
+
+    Toggleregister = (e) => {
+        this.props.history.push({
+            pathname: '/register',
+        });
+    };
+
     render() {
         return (
-            <div>
+            <div className="container">
+
+                <div class="topnav">
+                    <a onClick = {e => this.Toggleapp(e)} class="active" href="/">App</a>
+                    <a onClick = {e => this.Togglelogin(e)} href="/login">Login</a>
+                    <a onClick = {e => this.Toggleregister(e)}  href="/register">Register</a>
+                </div>    
                 <table className="table table-striped">
                     <thead>
                         <tr>

@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css"
+import './jh.css'
 
 export default class Register extends Component {
     
@@ -51,38 +54,64 @@ export default class Register extends Component {
         });
     }
 
+    Toggleapp = (e) => {
+        this.props.history.push({
+            pathname: '/',
+        });
+    };
+
+
+    Togglelogin = (e) => {
+        this.props.history.push({
+            pathname: '/login',
+        });
+    };
+
+
+    Toggleregister = (e) => {
+        this.props.history.push({
+            pathname: '/register',
+        });
+    };
+
     render() {
         return (
-            <div>
-                <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <label>Username: </label>
-                        <input type="text" 
-                               className="form-control" 
-                               value={this.state.username}
-                               onChange={this.onChangeUsername}
-                               />
+                <div className="container">
+
+                    <div class="topnav">
+                        <a onClick = {e => this.Toggleapp(e)} href="/">App</a>
+                        <a onClick = {e => this.Togglelogin(e)} href="/login">Login</a>
+                        <a onClick = {e => this.Toggleregister(e)} class="active" href="/register">Register</a>
                     </div>
-                    <div className="form-group">
-                        <label>Password: </label>
-                        <input type="password" 
-                               className="form-control"
-                               value={this.state.password}
-                               onChange={this.onChangePassword}
-                               />  
-                    </div>
-                    <div className="form-group">
-                        <label>User type: </label>
-                        <select className="form-control" value={this.state.user_type} onChange={this.onChangeUser_type}>
-                            <option value="customer">Customer</option>
-                            <option value="vendor">Vendor</option>
-                        </select>    
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Create User" className="btn btn-primary"/>
-                    </div>
-                </form>
-            </div>
+                    <form onSubmit={this.onSubmit}>
+                        <div className="form-group">
+                            <label>Username: </label>
+                            <input type="text" 
+                                   className="form-control" 
+                                   value={this.state.username}
+                                   onChange={this.onChangeUsername}
+                                   />
+                        </div>
+                        <div className="form-group">
+                            <label>Password: </label>
+                            <input type="password" 
+                                   className="form-control"
+                                   value={this.state.password}
+                                   onChange={this.onChangePassword}
+                                   />  
+                        </div>
+                        <div className="form-group">
+                            <label>User type: </label>
+                            <select className="form-control" value={this.state.user_type} onChange={this.onChangeUser_type}>
+                                <option value="customer">Customer</option>
+                                <option value="vendor">Vendor</option>
+                            </select>    
+                        </div>
+                        <div className="form-group">
+                            <input type="submit" value="Create User" className="btn btn-primary"/>
+                        </div>
+                    </form>
+                </div>
         )
     }
 }

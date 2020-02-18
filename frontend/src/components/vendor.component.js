@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css"
+/* eslint-disable */ 
 
 export default class Vendor extends Component {
 
@@ -35,6 +38,7 @@ export default class Vendor extends Component {
 
     addProduct = (e) => {
         this.setState({rendor : '1'});
+        return this.render()
     }
 
     allProduct = (e) => {
@@ -155,26 +159,28 @@ export default class Vendor extends Component {
 
     render1() {
         return (
-            <div>
-                <button onClick = {e => this.addProduct(e)}>Add Product</button>
-                <button onClick = {e => this.allProduct(e)}>All Products</button>
-                <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
-                <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
-                <button onClick = {e => this.Logout(e)}>Logout</button>
+            <div className="container">
+                <div class="topnav">
+                    <a onClick = {e => this.addProduct(e)} href="#" >Add Product</a>
+                    <a onClick = {e => this.allProduct(e)} href="#" >All Products</a>
+                    <a onClick = {e => this.Productready(e)} href="#" >Product ready to dispatch</a>
+                    <a onClick = {e => this.Productdispatch(e)} href="#" >Dispatched product</a>
+                    <a onClick = {e => this.Logout(e)} href="#" >Logout</a>
+                </div> 
             </div>   
         )
     }
 
     render2() {
         return (
-            <div>
-                <div>
-                    <button onClick = {e => this.addProduct(e)}>Add Product</button>
-                    <button onClick = {e => this.allProduct(e)}>All Products</button>
-                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
-                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
-                    <button onClick = {e => this.Logout(e)}>Logout</button>
-                </div>    
+            <div className="container">
+                    <div class="topnav">
+                    <a onClick = {e => this.addProduct(e)} class="active" href="#" >Add Product</a>
+                    <a onClick = {e => this.allProduct(e)} href="#" >All Products</a>
+                    <a onClick = {e => this.Productready(e)} href="#" >Product ready to dispatch</a>
+                    <a onClick = {e => this.Productdispatch(e)} href="#" >Dispatched product</a>
+                    <a onClick = {e => this.Logout(e)} href="#" >Logout</a>
+                    </div> 
                 <div>  
                     <form onSubmit= {e => this.onSubmit(e)}>
                         <div className="form-group">
@@ -213,14 +219,14 @@ export default class Vendor extends Component {
 
     render3() {
         return (
-            <div>
-                <div>
-                    <button onClick = {e => this.addProduct(e)}>Add Product</button>
-                    <button onClick = {e => this.allProduct(e)}>All Products</button>
-                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
-                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
-                    <button onClick = {e => this.Logout(e)}>Logout</button>
-                </div>    
+            <div className="container">
+                    <div class="topnav">
+                    <a onClick = {e => this.addProduct(e)} href="#" >Add Product</a>
+                    <a onClick = {e => this.allProduct(e)} class="active" href="#" >All Products</a>
+                    <a onClick = {e => this.Productready(e)} href="#" >Product ready to dispatch</a>
+                    <a onClick = {e => this.Productdispatch(e)} href="#" >Dispatched product</a>
+                    <a onClick = {e => this.Logout(e)} href="#" >Logout</a>
+                    </div> 
                 <div>
                     <table className="table table-striped">
                     <thead>
@@ -253,14 +259,14 @@ export default class Vendor extends Component {
 
     render4() {
         return (
-            <div>
-                <div>
-                    <button onClick = {e => this.addProduct(e)}>Add Product</button>
-                    <button onClick = {e => this.allProduct(e)}>All Products</button>
-                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
-                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
-                    <button onClick = {e => this.Logout(e)}>Logout</button>
-                </div>    
+            <div className="container">
+                    <div class="topnav">
+                    <a onClick = {e => this.addProduct(e)} href="#" >Add Product</a>
+                    <a onClick = {e => this.allProduct(e)} href="#" >All Products</a>
+                    <a onClick = {e => this.Productready(e)} class="active" href="#" >Product ready to dispatch</a>
+                    <a onClick = {e => this.Productdispatch(e)} href="#" >Dispatched product</a>
+                    <a onClick = {e => this.Logout(e)}  href="#" >Logout</a>
+                    </div> 
                 <div>
                     <table className="table table-striped">
                     <thead>
@@ -269,47 +275,6 @@ export default class Vendor extends Component {
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Dispatch</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    { 
-                        this.state.ready_products.map((currentProduct, i) => {
-                            return (
-                                <tr>
-                                    <td>{currentProduct.name}</td>
-                                    <td>{currentProduct.price}</td>
-                                    <td>{currentProduct.quantity}</td>
-                                    <td> <button onClick = {e => this.Dispatch(e,currentProduct._id)}> Dispatch </button> </td>
-                                </tr>
-                            )
-                        })
-                    }
-                    </tbody>
-                </table>
-                </div>
-            </div>       
-        )
-    }
-
-
-    render4() {
-        return (
-            <div>
-                <div>
-                    <button onClick = {e => this.addProduct(e)}>Add Product</button>
-                    <button onClick = {e => this.allProduct(e)}>All Products</button>
-                    <button onClick = {e => this.Productready(e)}>Product ready to dispatch</button>
-                    <button onClick = {e => this.Productdispatch(e)}>Dispatched product</button>
-                    <button onClick = {e => this.Logout(e)}>Logout</button>
-                </div>    
-                <div>
-                    <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
