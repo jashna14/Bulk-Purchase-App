@@ -15,8 +15,10 @@ let Product = new mongoose.Schema({
     },
     status: {
     	type: Number
+    },
+    vendor_name: {
+    	type: String
     }
-
 
 });
 

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import './jh.css'
+import { exportSpecifier } from '@babel/types';
 
 export default class Login extends Component {
     
@@ -49,13 +49,15 @@ export default class Login extends Component {
                         if(res.data[0].user_type === "vendor") { 
                             this.props.history.push({
                                 pathname: '/vendor/:vendor_id',
-                                vendor: res.data[0]._id
+                                vendor: res.data[0]._id,
+                                vendor_name: res.data[0].username
                             })
                         }    
                         else if(res.data[0].user_type === "customer") {
                             this.props.history.push({
                                 pathname: 'customer/:customer_id',
-                                customer: res.data[0]._id
+                                customer: res.data[0]._id,
+                                customer_name: res.data[0].username
                             })
                         }
                     }
@@ -87,7 +89,7 @@ export default class Login extends Component {
     };
 
 
-    Toggleregister = (e) => {
+    Toggleregister = (e) => { 
         this.props.history.push({
             pathname: '/register',
         });

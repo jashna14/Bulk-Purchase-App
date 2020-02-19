@@ -9,7 +9,14 @@ let User = new mongoose.Schema({
     },
     user_type: {
     	type: String
+    },
+    rating: {
+    	type: Number
+    },
+    cnt: {
+    	type: Number
     }
+
 });
 
 module.exports = mongoose.model('User', User,'user');

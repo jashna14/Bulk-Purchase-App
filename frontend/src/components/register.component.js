@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import './jh.css'
 
@@ -12,7 +11,9 @@ export default class Register extends Component {
         this.state = {
             username: '',
             password: '',
-            user_type: "customer"
+            user_type: "customer",
+            rating: 0,
+            cnt: 0
         }
 
         this.onChangeUsername = this.onChangeUsername.bind(this);
@@ -39,7 +40,9 @@ export default class Register extends Component {
         const newUser = {
             username: this.state.username,
             password: this.state.password,
-            user_type: this.state.user_type
+            user_type: this.state.user_type,
+            rating: parseInt(0),
+            cnt: parseInt(0)
         }
         axios.post('http://localhost:4000/add', newUser)
              // .then(res => {

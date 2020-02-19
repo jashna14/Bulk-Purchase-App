@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 /* eslint-disable */ 
 
@@ -8,16 +7,17 @@ export default class Vendor extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             name: '',
-            price: '',
-            quantity: '',
+            price: 0,
+            quantity: 0,
             status: '0',
             vendor: this.props.location.vendor,
+            vendor_name: this.props.location.vendor_name,
             rendor: '0',
             products: [],
-            ready_products: []
+            ready_products: [],
+            dispatch_products: []
         }
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
@@ -42,7 +42,12 @@ export default class Vendor extends Component {
     }
 
     allProduct = (e) => {
-        axios.get(`http://localhost:4000/list/:${this.state.vendor}`)
+        const newProduct = {
+            vendor: this.state.vendor,
+            status: '0'
+            }
+
+        axios.post('http://localhost:4000/all_product', newProduct)
              .then(response => {
                 this.setState({products: response.data});
              })
@@ -70,44 +75,73 @@ export default class Vendor extends Component {
 
     }
 
+
+    Productdispatch= (e) => {
+        const newProduct = {
+            vendor: this.state.vendor,
+            status: '2'
+            }
+
+        axios.post('http://localhost:4000/product_dispatch', newProduct)
+            .then(response => {
+                this.setState({dispatch_products: response.data});
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+        this.setState({rendor : '4'});
+
+    }
+
     Delete = (e,Pid) => {
         const pid = {
             id: Pid
         }
         axios.post('http://localhost:4000/delete_product', pid)
         .then(response => {
-            axios.get(`http://localhost:4000/list/:${this.state.vendor}`)
-            .then(response => {
-                this.setState({products: response.data});
-            })
-            .catch(function(error) {
-                 console.log(error);
+
+            const newProduct = {
+                vendor: this.state.vendor,
+                status: '0'
+                }
+    
+            axios.post('http://localhost:4000/all_product', newProduct)
+                 .then(response => {
+                    this.setState({products: response.data});
+                    const data1 = {
+                        id: Pid,
+                        status: '4'
+                    }
+                    axios.post('http://localhost:4000/update_order_status', data1)
+                 })
+                 .catch(function(error) {
+                     console.log(error);
+                 })
+            
             })            
-        })
     }
 
     Dispatch = (e,Pid) => {
-        console.log(Pid)
 
         const pid = {
             id: Pid
         }
-        console.log("lalalalallala22222222")
         axios.post('http://localhost:4000/dispatch_product', pid)
         .then(response => {
-            console.log("lalalalallala")
-            const newProduct = {
-            vendor: this.state.vendor,
-            status: '1'
-            }
-            axios.post('http://localhost:4000/product_ready', newProduct)
+            axios.post('http://localhost:4000/dispatch_order', pid)
             .then(response => {
-                console.log('yeyeyyeyeyeye')
-                this.setState({ready_products: response.data});
-            })
-            .catch(function(error) {
-                console.log(error);
-            })
+                const newProduct = {
+                vendor: this.state.vendor,
+                status: '1'
+                }
+                axios.post('http://localhost:4000/product_ready', newProduct)
+                .then(response => {
+                    this.setState({ready_products: response.data});
+                })
+                .catch(function(error) {
+                    console.log(error);
+                })
+            }) 
         })
     }
 
@@ -125,7 +159,8 @@ export default class Vendor extends Component {
             price: this.state.price,
             quantity: parseInt(this.state.quantity),
             vendor: this.state.vendor,
-            status: this.state.status
+            status: this.state.status,
+            vendor_name: this.state.vendor_name
         }
 
         axios.post('http://localhost:4000/add_product', newProduct)
@@ -153,6 +188,10 @@ export default class Vendor extends Component {
 
         else if (this.state.rendor === '3') {
             return this.render4();
+        }
+
+        else if (this.state.rendor === '4') {
+            return this.render5();
         }
 
     }
@@ -215,7 +254,6 @@ export default class Vendor extends Component {
             </div>       
         )
     }
-
 
     render3() {
         return (
@@ -286,6 +324,45 @@ export default class Vendor extends Component {
                                     <td>{currentProduct.price}</td>
                                     <td>{currentProduct.quantity}</td>
                                     <td> <button onClick = {e => this.Dispatch(e,currentProduct._id)}> Dispatch </button> </td>
+                                </tr>
+                            )
+                        })
+                    }
+                    </tbody>
+                </table>
+                </div>
+            </div>       
+        )
+    }
+
+
+    render5() {
+        return (
+            <div className="container">
+                    <div class="topnav">
+                    <a onClick = {e => this.addProduct(e)} href="#" >Add Product</a>
+                    <a onClick = {e => this.allProduct(e)} href="#" >All Products</a>
+                    <a onClick = {e => this.Productready(e)}  href="#" >Product ready to dispatch</a>
+                    <a onClick = {e => this.Productdispatch(e)} class="active" href="#" >Dispatched product</a>
+                    <a onClick = {e => this.Logout(e)}  href="#" >Logout</a>
+                    </div> 
+                <div>
+                    <table className="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    { 
+                        this.state.dispatch_products.map((currentProduct, i) => {
+                            return (
+                                <tr>
+                                    <td>{currentProduct.name}</td>
+                                    <td>{currentProduct.price}</td>
+                                    <td>{currentProduct.quantity}</td>
                                 </tr>
                             )
                         })

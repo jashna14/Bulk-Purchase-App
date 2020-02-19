@@ -9,6 +9,7 @@ const userRoutes = express.Router();
 
 let User = require('./models/user');
 let Product = require('./models/product');
+let Order = require('./models/order');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -45,6 +46,18 @@ userRoutes.route('/add').post(function(req, res) {
         });
 });
 
+// Adding an order
+userRoutes.route('/add_order').post(function(req, res) {
+    let order = new Order(req.body);
+    order.save()
+        .then(user => {
+            res.status(200).json({'Order': 'Order added successfully'});
+        })
+        .catch(err => {
+            res.status(400).send('Error');
+        });
+});
+
 // Adding a new product
 userRoutes.route('/add_product').post(function(req, res) {
 
@@ -72,8 +85,46 @@ userRoutes.route('/delete_product').post(function(req, res) {
 
 // Dispatch a product
 userRoutes.route('/dispatch_product').post(function(req, res) {
-    console.log(req.body)
     Product.updateOne({_id:`${req.body.id}`}, {status: '2'},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+
+    });
+});
+
+
+// Dispatch an Order
+userRoutes.route('/dispatch_order').post(function(req, res) {
+    Order.updateMany({product:`${req.body.id}`}, {status: '2'},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+
+    });
+});
+
+// Update Order Status
+userRoutes.route('/update_order_status').post(function(req, res) {
+    Order.updateMany({product:`${req.body.id}`}, {status: `${req.body.status}`},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+    });
+});
+
+// Order a product
+userRoutes.route('/update_product').post(function(req, res) {
+    Product.updateOne({_id:`${req.body.id}`}, {status: `${req.body.status}`, quantity: `${req.body.quantity}`},function(err,product){
         if(err) {
             console.log(err);
         } else {
@@ -95,11 +146,56 @@ userRoutes.route('/product_ready').post(function(req, res) {
     });
 });
 
+//finding search products
+userRoutes.route('/search_product').post(function(req, res) {
+    Product.find({name: `${req.body.name}`,status: `${req.body.status}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
+});
+
+
+// finding dispatch products
+userRoutes.route('/product_dispatch').post(function(req, res) {
+    console.log(req.body)
+    Product.find({vendor: `${req.body.vendor}`,status: `${req.body.status}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
+});
+
 // Getting all the products
-userRoutes.route('/list/:id').get(function(req, res) {
-    id = req.params.id
-    id = id.substring(1);
-    Product.find({vendor: `${id}`}, function (err, product) {
+userRoutes.route('/all_product').post(function(req, res) {
+    Product.find({vendor: `${req.body.vendor}`,status: `${req.body.status}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
+});
+
+
+// Getting all the orders
+userRoutes.route('/all_order').post(function(req, res) {
+    Order.find({customer: `${req.body.customer}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
+});
+
+// Getting confirmed the orders
+userRoutes.route('/confirmed_order').post(function(req, res) {
+    Order.find({customer: `${req.body.customer}`,status: `${req.body.status}`}, function (err, product) {
         if (err) {
             console.log(err);
         } else {
