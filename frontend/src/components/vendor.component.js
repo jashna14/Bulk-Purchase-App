@@ -82,7 +82,7 @@ export default class Vendor extends Component {
             status: '2'
             }
 
-        axios.post('http://localhost:4000/product_dispatch', newProduct)
+        axios.post('http://localhost:4000/order_dispatch', newProduct)
             .then(response => {
                 this.setState({dispatch_products: response.data});
             })
@@ -350,9 +350,11 @@ export default class Vendor extends Component {
                     <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Price</th>
+                            <th>Product Name</th>
                             <th>Quantity</th>
+                            <th>Customer Name</th>
+                            <th>Rating</th>
+                            <th>Review</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -360,9 +362,11 @@ export default class Vendor extends Component {
                         this.state.dispatch_products.map((currentProduct, i) => {
                             return (
                                 <tr>
-                                    <td>{currentProduct.name}</td>
-                                    <td>{currentProduct.price}</td>
+                                    <td>{currentProduct.product_name}</td>
                                     <td>{currentProduct.quantity}</td>
+                                    <td>{currentProduct.customer_name}</td>
+                                    <td>{currentProduct.rating}</td>
+                                    <td>{currentProduct.review}</td>
                                 </tr>
                             )
                         })

@@ -122,6 +122,18 @@ userRoutes.route('/update_order_status').post(function(req, res) {
     });
 });
 
+// Update Order Rnr
+userRoutes.route('/add_rnr').post(function(req, res) {
+    Order.updateOne({_id:`${req.body.id}`}, {rating: `${req.body.rating}` , review: `${req.body.review}`},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+    });
+});
+
 // Order a product
 userRoutes.route('/update_product').post(function(req, res) {
     Product.updateOne({_id:`${req.body.id}`}, {status: `${req.body.status}`, quantity: `${req.body.quantity}`},function(err,product){
@@ -158,10 +170,10 @@ userRoutes.route('/search_product').post(function(req, res) {
 });
 
 
-// finding dispatch products
-userRoutes.route('/product_dispatch').post(function(req, res) {
+// finding dispatch orders
+userRoutes.route('/order_dispatch').post(function(req, res) {
     console.log(req.body)
-    Product.find({vendor: `${req.body.vendor}`,status: `${req.body.status}`}, function (err, product) {
+    Order.find({vendor: `${req.body.vendor}`,status: `${req.body.status}`}, function (err, product) {
         if (err) {
             console.log(err);
         } else {
@@ -185,6 +197,18 @@ userRoutes.route('/all_product').post(function(req, res) {
 // Getting all the orders
 userRoutes.route('/all_order').post(function(req, res) {
     Order.find({customer: `${req.body.customer}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
+});
+
+
+// Getting all the orders rnr
+userRoutes.route('/get_rnr').post(function(req, res) {
+    Order.find({vendor: `${req.body.vendor}`}, function (err, product) {
         if (err) {
             console.log(err);
         } else {
