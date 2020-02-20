@@ -33,8 +33,10 @@ let Order = new mongoose.Schema({
     },
     review: {
     	type: String
+    },
+    quantity_rem: {
+    	type: Number
     }
-
 });
 
 module.exports = mongoose.model('Order',Order,'order');

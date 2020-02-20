@@ -110,7 +110,31 @@ userRoutes.route('/dispatch_order').post(function(req, res) {
     });
 });
 
-// Update Order Status
+// Update Order
+userRoutes.route('/update_order').post(function(req, res) {
+    Order.updateMany({product:`${req.body.id}`}, {status: `${req.body.status}`, quantity_rem: `${req.body.quantity_rem}`},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+    });
+});
+
+// Edit Order
+userRoutes.route('/edit_order').post(function(req, res) {
+    Order.updateOne({_id:`${req.body.id}`}, {status: `${req.body.status}`, quantity_rem: `${req.body.quantity_rem}`, quantity: `${req.body.quantity}`},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            return res.json(product);
+        }
+    });
+});
+
+// Update Order status
 userRoutes.route('/update_order_status').post(function(req, res) {
     Order.updateMany({product:`${req.body.id}`}, {status: `${req.body.status}`},function(err,product){
         if(err) {
@@ -169,10 +193,19 @@ userRoutes.route('/search_product').post(function(req, res) {
     });
 });
 
+//finding product quantity
+userRoutes.route('/product_quantity').post(function(req, res) {
+    Product.find({_id: `${req.body.id}`}, function (err, product) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(product);
+        }
+    });
+});
 
 // finding dispatch orders
 userRoutes.route('/order_dispatch').post(function(req, res) {
-    console.log(req.body)
     Order.find({vendor: `${req.body.vendor}`,status: `${req.body.status}`}, function (err, product) {
         if (err) {
             console.log(err);

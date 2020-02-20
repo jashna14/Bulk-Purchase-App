@@ -19,6 +19,7 @@ export default class Customer extends Component {
             customer: this.props.location.customer,
             rating: 0,
             review: '',
+            quantity_rem: 0,
             rendor: '0',
             search: '',
             o_quantity: '',
@@ -28,11 +29,14 @@ export default class Customer extends Component {
             conforders: [],
             pid: [],
             rnr: [],
-            sort: 'price' 
+            sort: 'price',
+            current_order: [],
+            edit_quantity: 0
         }
 
         this.onChangeSearch = this.onChangeSearch.bind(this);
         this.onChangeSort = this.onChangeSort.bind(this);
+        this.onChangeEdit_quantity = this.onChangeEdit_quantity.bind(this);
         this.onChangeRating = this.onChangeRating.bind(this);
         this.onChangeReview = this.onChangeReview.bind(this);
         this.onChangeo_quantity = this.onChangeo_quantity.bind(this);
@@ -44,6 +48,10 @@ export default class Customer extends Component {
 
     onChangeSort(event) {
         this.setState({ sort: event.target.value });
+    }
+
+    onChangeEdit_quantity(event) {
+        this.setState({ edit_quantity: event.target.value });
     }
 
     onChangeRating(event) {
@@ -77,6 +85,18 @@ export default class Customer extends Component {
             return 'Cancelled'
         }
     }
+
+    find_quantity = function(x){
+
+        if (x.status === 4) {
+            return 0
+        }
+        else {
+            return x.quantity_rem
+        }
+
+       
+    }   
 
     Logout = (e) => {
         this.props.history.push({
@@ -123,7 +143,7 @@ export default class Customer extends Component {
                     this.setState({search_result: response.data.sort((a,b) => a.price - b.price)});
                 }
                 else if (this.state.sort === 'quantity') {
-                    this.setState({search_result: response.data.sort((a,b) => a.quantity - b.quantity)})
+                    this.setState({search_result: response.data.sort((a,b) => a.quantity - b.quantity)});
                 }
             })
             .catch(function(error) {
@@ -195,6 +215,77 @@ export default class Customer extends Component {
 
     }
 
+    Edit_order_portal = (e,x) => {
+        this.setState({current_order: x})
+        this.setState({rendor : '8'});
+    }
+
+    Edit_order_portal1 = (e) => {
+        if (parseInt(this.state.current_order.quantity_rem) + parseInt(this.state.current_order.quantity) < parseInt(this.state.edit_quantity)) {
+            alert("Ordered Quantity should be less than quantity available")
+            this.setState({rendor : '8'});
+        }
+        else {   
+            const x = (parseInt(this.state.current_order.quantity_rem)  + parseInt(this.state.current_order.quantity) - parseInt(this.state.edit_quantity))
+            var y = 0
+            if (x === 0) {
+                y = 1
+            }
+
+            // console.log(x,y)
+
+            const data = {
+                id: this.state.current_order.product,
+                quantity: x,
+                status: y
+            }
+
+            // console.log(data)
+            axios.post('http://localhost:4000/update_product', data)
+            .then(response => {
+                const newOrder = {
+                    id: this.state.current_order._id,
+                    quantity: this.state.edit_quantity,
+                    status: y,
+                    quantity_rem: x
+                }
+        
+                axios.post('http://localhost:4000/edit_order', newOrder)
+                .then(response => {
+                    this.setState({
+                        quantity: 0,
+                        status: '',
+                        quantity_rem: 0
+
+                    });
+
+                    const data1 = {
+                        id: this.state.current_order.product,
+                        status: y,
+                        quantity_rem: x
+                    }
+                    axios.post('http://localhost:4000/update_order', data1)
+                    .then (response => {
+                        const newProduct = {
+                            customer: this.state.customer
+                            }
+                
+                        axios.post('http://localhost:4000/all_order', newProduct)
+                             .then(response => {
+                                this.setState({allorders: response.data});
+                             })
+                             .catch(function(error) {
+                                 console.log(error);
+                             })
+                    })
+                })    
+            })
+
+            alert('Order edited Successfully')
+            this.setState({rendor : '4'});
+        }    
+    }
+
     Order1 = (e) => {
 
         if(parseInt(this.state.current_pid.quantity) < parseInt(this.state.o_quantity))
@@ -232,7 +323,8 @@ export default class Customer extends Component {
                     customer_name: this.state.customer_name,
                     customer: this.state.customer,
                     rating: 0,
-                    review: ''
+                    review: '',
+                    quantity_rem: x
                 }
         
                 axios.post('http://localhost:4000/add_order', newOrder)
@@ -246,20 +338,35 @@ export default class Customer extends Component {
                         vendor: '',
                         status: '',
                         rating: 0,
-                        review: ''
+                        review: '',
+                        quantity_rem: 0
                     });
 
                     const data1 = {
                         id: this.state.current_pid._id,
-                        status: y
+                        status: y,
+                        quantity_rem: x
                     }
-                    axios.post('http://localhost:4000/update_order_status', data1)
+                    axios.post('http://localhost:4000/update_order', data1)
                 })    
             })
 
             alert('Ordered Successfully')
             this.setState({rendor : '1'});
         }    
+
+    }
+
+    renderComp(order) {
+        if(parseInt(order.status) === 0){
+            return(<button onClick = {e => this.Edit_order_portal(e,order)} >Edit Order</button>);
+          }
+        else if(parseInt(order.status) === 1) {
+            return(<button>Rate Vendor</button>)
+        }
+        else {
+            return(<td></td>)
+        }
 
     }
 
@@ -291,6 +398,9 @@ export default class Customer extends Component {
         }
         else if (this.state.rendor === '7') {
             return this.render8();
+        }
+        else if (this.state.rendor === '8') {
+            return this.render9();
         }
 
     }
@@ -452,10 +562,11 @@ export default class Customer extends Component {
                     <thead>
                         <tr>
                             <th>product Name</th>
-                            <th>Quantity Remaining</th>
+                            <th>Quantity Ordered</th>
                             <th>Vendor Name</th>
                             <th>Status</th>
-
+                            <th>Quantity Remaining</th>
+                            <th>-----</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -467,6 +578,8 @@ export default class Customer extends Component {
                                     <td>{currentProduct.quantity}</td>
                                     <td>{currentProduct.vendor_name}</td>
                                     <td>{this.find_status(currentProduct.status)}</td>
+                                    <td>{this.find_quantity(currentProduct)}</td>
+                                    {this.renderComp(currentProduct)}
                                 </tr>
                             )
                         })
@@ -595,6 +708,34 @@ export default class Customer extends Component {
                 </div>
                 <div>
                     <button onClick = {e => this.back(e)}>Back</button>
+                </div>
+            </div>   
+        )
+    }
+
+    render9() {
+        return (
+            <div className="container">
+                <div class="topnav">
+                    <a onClick = {e => this.searchproduct(e)} href="#">Search Product</a>
+                    <a onClick = {e => this.allOrders(e)} href="#"  class="active" >Orders Status</a>
+                    <a onClick = {e => this.Productconfirmed(e)} href="#" >Confirmed Orders</a>
+                    <a onClick = {e => this.Logout(e)} href="#" >Logout</a>
+                </div>
+                <div>  
+                    <form>
+                        <div className="form-group">
+                            <label>Quantity: </label>
+                            <input type="text" 
+                                   className="form-control" 
+                                   value={this.state.edit_quantity}
+                                   onChange={this.onChangeEdit_quantity}
+                                   />
+                        </div>           
+                        <div className="form-group">
+                            <input type="button" value="Submit" onClick = {e => this.Edit_order_portal1(e)} className="btn btn-primary"/>
+                        </div>
+                    </form>
                 </div>
             </div>   
         )
