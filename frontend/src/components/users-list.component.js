@@ -49,7 +49,7 @@ export default class UsersList extends Component {
                 </div>    
                 <table className="table table-striped">
                     <thead>
-                        <tr>
+                        <tr align = "center">
                             <th>Username</th>
                             <th>Password</th>
                             <th>User_type</th>
@@ -59,7 +59,7 @@ export default class UsersList extends Component {
                     { 
                         this.state.users.map((currentUser, i) => {
                             return (
-                                <tr>
+                                <tr align = "center">
                                     <td>{currentUser.username}</td>
                                     <td>{currentUser.password}</td>
                                     <td>{currentUser.user_type}</td>

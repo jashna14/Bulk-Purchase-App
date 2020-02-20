@@ -198,13 +198,16 @@ userRoutes.route('/product_ready').post(function(req, res) {
 
 //finding search products
 userRoutes.route('/search_product').post(function(req, res) {
-    Product.find({name: `${req.body.name}`,status: `${req.body.status}`}, function (err, product) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(product);
-        }
-    });
+    if (req.body.name) {
+        const regex = new RegExp(escapeRegex(req.body.name), 'gi');
+        Product.find({name: regex,status: `${req.body.status}`}, function (err, product) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.json(product);
+            }
+        });
+    }    
 });
 
 //finding product quantity
@@ -309,3 +312,8 @@ app.use('/', userRoutes);
 app.listen(PORT, function() {
     console.log("Server is running on port: " + PORT);
 });
+
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
