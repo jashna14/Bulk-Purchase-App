@@ -50,7 +50,8 @@ export default class Login extends Component {
                             this.props.history.push({
                                 pathname: '/vendor/:vendor_id',
                                 vendor: res.data[0]._id,
-                                vendor_name: res.data[0].username
+                                vendor_name: res.data[0].username,
+                                vendor_rating: res.data[0].rating
                             })
                         }    
                         else if(res.data[0].user_type === "customer") {

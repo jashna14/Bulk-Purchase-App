@@ -77,7 +77,6 @@ userRoutes.route('/delete_product').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(product);
             res.json(product);
         }
     })
@@ -89,10 +88,20 @@ userRoutes.route('/dispatch_product').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
             return res.json(product);
         }
 
+    });
+});
+
+// Updating product vendor rating
+userRoutes.route('/update_prod_v_rating').post(function(req, res) {
+    Product.updateMany({vendor:`${req.body.id}`}, {vendor_rating:`${req.body.rating}`},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
+            return res.json(product);
+        }
     });
 });
 
@@ -103,7 +112,6 @@ userRoutes.route('/dispatch_order').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
             return res.json(product);
         }
 
@@ -116,7 +124,6 @@ userRoutes.route('/update_order').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
             return res.json(product);
         }
     });
@@ -128,7 +135,6 @@ userRoutes.route('/edit_order').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
             return res.json(product);
         }
     });
@@ -140,7 +146,6 @@ userRoutes.route('/update_order_status').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
             return res.json(product);
         }
     });
@@ -152,7 +157,17 @@ userRoutes.route('/add_rnr').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
+            return res.json(product);
+        }
+    });
+});
+
+// Update Order Rnr
+userRoutes.route('/add_rnr_v').post(function(req, res) {
+    User.updateOne({_id:`${req.body.id}`}, {rating: `${req.body.rating}`, cnt: `${req.body.cnt}`},function(err,product){
+        if(err) {
+            console.log(err);
+        } else {
             return res.json(product);
         }
     });
@@ -164,7 +179,6 @@ userRoutes.route('/update_product').post(function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            console.log(res);
             return res.json(product);
         }
 
@@ -246,6 +260,17 @@ userRoutes.route('/get_rnr').post(function(req, res) {
             console.log(err);
         } else {
             res.json(product);
+        }
+    });
+});
+
+// Getting vendor
+userRoutes.route('/get_vendor').post(function(req, res) {
+    User.find({_id: `${req.body.id}`}, function (err, user) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(user);
         }
     });
 });

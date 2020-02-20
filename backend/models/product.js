@@ -18,6 +18,9 @@ let Product = new mongoose.Schema({
     },
     vendor_name: {
     	type: String
+    },
+    vendor_rating: {
+    	type: Number
     }
 
 });

@@ -14,6 +14,7 @@ export default class Vendor extends Component {
             status: '0',
             vendor: this.props.location.vendor,
             vendor_name: this.props.location.vendor_name,
+            vendor_rating: this.props.location.vendor_rating,
             rendor: '0',
             products: [],
             ready_products: [],
@@ -160,7 +161,8 @@ export default class Vendor extends Component {
             quantity: parseInt(this.state.quantity),
             vendor: this.state.vendor,
             status: this.state.status,
-            vendor_name: this.state.vendor_name
+            vendor_name: this.state.vendor_name,
+            vendor_rating: this.state.vendor_rating
         }
 
         axios.post('http://localhost:4000/add_product', newProduct)
@@ -377,6 +379,4 @@ export default class Vendor extends Component {
             </div>       
         )
     }
-
-
 }

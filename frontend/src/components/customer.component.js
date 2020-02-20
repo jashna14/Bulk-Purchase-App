@@ -18,6 +18,7 @@ export default class Customer extends Component {
             customer_name: this.props.location.customer_name,
             customer: this.props.location.customer,
             rating: 0,
+            rating_v: 0,
             review: '',
             quantity_rem: 0,
             rendor: '0',
@@ -31,13 +32,15 @@ export default class Customer extends Component {
             rnr: [],
             sort: 'price',
             current_order: [],
-            edit_quantity: 0
+            edit_quantity: 0,
+            vid: 0
         }
 
         this.onChangeSearch = this.onChangeSearch.bind(this);
         this.onChangeSort = this.onChangeSort.bind(this);
         this.onChangeEdit_quantity = this.onChangeEdit_quantity.bind(this);
         this.onChangeRating = this.onChangeRating.bind(this);
+        this.onChangeRating_v = this.onChangeRating_v.bind(this);
         this.onChangeReview = this.onChangeReview.bind(this);
         this.onChangeo_quantity = this.onChangeo_quantity.bind(this);
     }
@@ -56,6 +59,10 @@ export default class Customer extends Component {
 
     onChangeRating(event) {
         this.setState({ rating: event.target.value });
+    }
+
+    onChangeRating_v(event) {
+        this.setState({ rating_v: event.target.value });
     }
 
     onChangeReview(event) {
@@ -109,23 +116,80 @@ export default class Customer extends Component {
         this.setState({rendor : '6'}); 
     };
 
+    Rnr_v = (e,Vid) => {
+        this.state.vid = Vid
+        this.setState({rendor : '9'}); 
+    };
+
     Rnr1 = (e) => {
-        const newProduct = {
-            id: this.state.pid,
-            rating: this.state.rating,
-            review: this.state.review
+        if ( parseFloat(this.state.rating) > 5 | parseFloat(this.state.rating) < 0 ) {
+            alert('Please rate between 0 - 5')
+            this.setState({rendor : '9'});
         }
+        else {
+            const newProduct = {
+                id: this.state.pid,
+                rating: parseFloat(this.state.rating),
+                review: this.state.review
+            }
+    
+            axios.post('http://localhost:4000/add_rnr', newProduct)
+            alert('review and rating added successfully')    
+    
+            this.setState({
+                id: '',
+                rating: 0,
+                review: ''
+            });
+    
+            this.setState({rendor : '5'});
+        }
+         
 
-        axios.post('http://localhost:4000/add_rnr', newProduct)
-        alert('review and rating added successfully')    
+    };
 
-        this.setState({
-            id: '',
-            rating: 0,
-            review: ''
-        });
+    Rnr1_v = (e) => {
 
-        this.setState({rendor : '5'}); 
+        if ( parseFloat(this.state.rating_v) > 5 | parseFloat(this.state.rating_v) < 0 ) {
+            alert('Please rate between 0 - 5')
+            this.setState({rendor : '9'});
+        }
+        else {
+            const data = {
+                id: this.state.vid,            
+            }
+            axios.post('http://localhost:4000/get_vendor', data)
+            .then( response => {
+                var count = parseInt(response.data[0].cnt) + parseInt(1);
+                var ratingg = (parseFloat(response.data[0].rating)*parseInt(response.data[0].cnt))
+                ratingg = ratingg + parseFloat(this.state.rating_v)
+                ratingg = ratingg / parseInt(count)
+    
+                const newProduct = {
+                    id: this.state.vid,
+                    rating: ratingg,
+                    cnt: count
+                }
+        
+                axios.post('http://localhost:4000/add_rnr_v', newProduct)
+                .then( response => {
+                    var data = {
+                        id: this.state.vid,
+                        rating: ratingg
+                    }
+                    axios.post('http://localhost:4000/update_prod_v_rating', data)
+                })
+        
+                this.setState({
+                    rating_v: 0,
+                });
+         
+            })
+    
+            alert('Vendor rating added successfully')    
+            this.setState({rendor : '5'});
+        }
+        
 
     };
 
@@ -291,7 +355,7 @@ export default class Customer extends Component {
         if(parseInt(this.state.current_pid.quantity) < parseInt(this.state.o_quantity))
         {
             alert('Ordered Quantity more than Remaining Quantity')
-            this.setState({rendor : '1'});
+            this.setState({rendor : '3'});
         }
         else
         {   
@@ -360,9 +424,6 @@ export default class Customer extends Component {
     renderComp(order) {
         if(parseInt(order.status) === 0){
             return(<button onClick = {e => this.Edit_order_portal(e,order)} >Edit Order</button>);
-          }
-        else if(parseInt(order.status) === 1) {
-            return(<button>Rate Vendor</button>)
         }
         else {
             return(<td></td>)
@@ -401,6 +462,9 @@ export default class Customer extends Component {
         }
         else if (this.state.rendor === '8') {
             return this.render9();
+        }
+        else if (this.state.rendor === '9') {
+            return this.render10();
         }
 
     }
@@ -494,6 +558,7 @@ export default class Customer extends Component {
                             <th>Price</th>
                             <th>Quantity Remaining</th>
                             <th>Vendor Name</th>
+                            <th>Vendor Rating</th>
                             <th>Order</th>
                         </tr>
                     </thead>
@@ -506,6 +571,7 @@ export default class Customer extends Component {
                                     <td>{currentProduct.price}</td>
                                     <td>{currentProduct.quantity}</td>
                                     <td onClick = {e => this.showrnr(e,currentProduct)}>{currentProduct.vendor_name}</td>
+                                    <td>{currentProduct.vendor_rating}</td>
                                     <td> <button onClick = {e => this.Order(e,currentProduct)}> Order </button> </td>
                                 </tr>
                             )
@@ -609,8 +675,8 @@ export default class Customer extends Component {
                             <th>Quantity Remaining</th>
                             <th>Vendor Name</th>
                             <th>Status</th>
-                            <th>Add Reviews and Rating</th>
-
+                            <th>Add Product Reviews and Rating</th>
+                            <th>Add Vendor Rating</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -622,7 +688,8 @@ export default class Customer extends Component {
                                     <td>{currentProduct.quantity}</td>
                                     <td>{currentProduct.vendor_name}</td>
                                     <td>{this.find_status(currentProduct.status)}</td>
-                                    <td> <button onClick = {e => this.Rnr(e,currentProduct._id)}> Submit Reviews and Ratings </button> </td>
+                                    <td> <button onClick = {e => this.Rnr(e,currentProduct._id)}> Rate and Review Product </button> </td>
+                                    <td> <button onClick = {e => this.Rnr_v(e,currentProduct.vendor)}> Rate Vendor </button> </td>
                                 </tr>
                             )
                         })
@@ -741,5 +808,31 @@ export default class Customer extends Component {
         )
     }
 
-
+    render10() {
+        return (
+            <div className="container">
+                <div class="topnav">
+                    <a onClick = {e => this.searchproduct(e)} href="#">Search Product</a>
+                    <a onClick = {e => this.allOrders(e)} href="#" >Orders Status</a>
+                    <a onClick = {e => this.Productconfirmed(e)} href="#"  class="active">Confirmed Orders</a>
+                    <a onClick = {e => this.Logout(e)} href="#" >Logout</a>
+                </div>
+                <div>  
+                    <form>
+                        <div className="form-group">
+                            <label>Vendor Rating out of 5: </label>
+                            <input type="text" 
+                                   className="form-control" 
+                                   value={this.state.rating_v}
+                                   onChange={this.onChangeRating_v}
+                                   />
+                        </div>           
+                        <div className="form-group">
+                            <input type="button" value="Submit" onClick = {e => this.Rnr1_v(e)} className="btn btn-primary"/>
+                        </div>
+                    </form>
+                </div>
+            </div>   
+        )
+    }
 }
