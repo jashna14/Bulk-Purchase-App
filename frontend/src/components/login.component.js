@@ -3,6 +3,7 @@ import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css"
 import './jh.css'
 import { exportSpecifier } from '@babel/types';
+/* eslint-disable */
 
 export default class Login extends Component {
     
@@ -64,7 +65,7 @@ export default class Login extends Component {
                     }
                 }
                 else {
-                    alert("User not found")
+                    alert("Invalid Username or Password")
                 }    
             });
 

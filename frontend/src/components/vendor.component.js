@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css"
+import './jh.css'
 /* eslint-disable */ 
 
 export default class Vendor extends Component {
@@ -166,6 +167,11 @@ export default class Vendor extends Component {
         }
 
         axios.post('http://localhost:4000/add_product', newProduct)
+        .then(response => {
+        })
+        .catch(function(error) {
+            alert("Price and Quantity should be integer")
+        })
             
 
         this.setState({
@@ -270,7 +276,7 @@ export default class Vendor extends Component {
                 <div>
                     <table className="table table-striped">
                     <thead>
-                        <tr>
+                        <tr align = "center">
                             <th>Name</th>
                             <th>Price</th>
                             <th>Quantity</th>
@@ -281,11 +287,11 @@ export default class Vendor extends Component {
                     { 
                         this.state.products.map((currentProduct, i) => {
                             return (
-                                <tr>
+                                <tr align = "center">
                                     <td>{currentProduct.name}</td>
                                     <td>{currentProduct.price}</td>
                                     <td>{currentProduct.quantity}</td>
-                                    <td> <button onClick = {e => this.Delete(e,currentProduct._id)}> Delete </button> </td>
+                                    <td> <button  class = "bt1" onClick = {e => this.Delete(e,currentProduct._id)}> Delete </button> </td>
                                 </tr>
                             )
                         })
@@ -310,7 +316,7 @@ export default class Vendor extends Component {
                 <div>
                     <table className="table table-striped">
                     <thead>
-                        <tr>
+                        <tr align = "center">
                             <th>Name</th>
                             <th>Price</th>
                             <th>Quantity</th>
@@ -321,7 +327,7 @@ export default class Vendor extends Component {
                     { 
                         this.state.ready_products.map((currentProduct, i) => {
                             return (
-                                <tr>
+                                <tr align = "center">
                                     <td>{currentProduct.name}</td>
                                     <td>{currentProduct.price}</td>
                                     <td>{currentProduct.quantity}</td>
@@ -351,7 +357,7 @@ export default class Vendor extends Component {
                 <div>
                     <table className="table table-striped">
                     <thead>
-                        <tr>
+                        <tr align = "center">
                             <th>Product Name</th>
                             <th>Quantity</th>
                             <th>Customer Name</th>
@@ -363,7 +369,7 @@ export default class Vendor extends Component {
                     { 
                         this.state.dispatch_products.map((currentProduct, i) => {
                             return (
-                                <tr>
+                                <tr align = "center">
                                     <td>{currentProduct.product_name}</td>
                                     <td>{currentProduct.quantity}</td>
                                     <td>{currentProduct.customer_name}</td>
