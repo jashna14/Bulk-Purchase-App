@@ -170,7 +170,7 @@ export default class Vendor extends Component {
         .then(response => {
         })
         .catch(function(error) {
-            alert("Price and Quantity should be integer")
+            alert("Price and Quantity should be integer OR The product already exists OR Some fields are empty")
         })
             
 

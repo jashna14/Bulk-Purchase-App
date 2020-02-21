@@ -2,13 +2,16 @@ const mongoose = require('mongoose');
 
 let Product = new mongoose.Schema({
     name: {
-        type: String
+        type: String,
+        required: true
     },
     price: {
-        type: Number
+        type: Number,
+        required: true
     },
     quantity: {
-    	type: Number
+        type: Number,
+        required: true
     },
     vendor: {
     	type: String
@@ -25,4 +28,5 @@ let Product = new mongoose.Schema({
 
 });
 
+Product.index({vendor: 1, name: 1 }, { unique: true });
 module.exports = mongoose.model('Product',Product,'product');

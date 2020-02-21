@@ -12,7 +12,7 @@ export default class Register extends Component {
         this.state = {
             username: '',
             password: '',
-            user_type: "customer",
+            user_type: 'customer',
             rating: 0,
             cnt: 0
         }
@@ -46,15 +46,16 @@ export default class Register extends Component {
             cnt: parseInt(0)
         }
         axios.post('http://localhost:4000/add', newUser)
-             // .then(res => {
-                // console.log(res.data);
-                // if(res.data )
-                // });
+        .then(response => {
+         })
+         .catch(function(error) {
+            alert("The { username,user_type } combination already exists OR Some fielda are empty")
+         })
 
         this.setState({
             username: '',
             password: '',
-            user_type: ''
+            user_type: 'customer'
         });
     }
 
@@ -112,7 +113,7 @@ export default class Register extends Component {
                             </select>    
                         </div>
                         <div className="form-group">
-                            <input type="submit" value="Create User" className="btn btn-primary"/>
+                            <input type="submit" value="Sign up" className="btn btn-primary"/>
                         </div>
                     </form>
                 </div>

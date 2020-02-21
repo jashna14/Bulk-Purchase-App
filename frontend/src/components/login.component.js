@@ -13,7 +13,7 @@ export default class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            user_type: "vendor"
+            user_type: 'customer'
         }
 
         this.onChangeUsername = this.onChangeUsername.bind(this);
@@ -72,7 +72,7 @@ export default class Login extends Component {
         this.setState({
             username: '',
             password: '',
-            user_type: ''
+            user_type: 'customer'
         });
     }
 
@@ -130,7 +130,7 @@ export default class Login extends Component {
                         </select>    
                     </div>
                     <div className="form-group">
-                        <input type="submit" value="Login" className="btn btn-primary"/>
+                        <input type="submit" value="Sign in" className="btn btn-primary"/>
                     </div>
                 </form>
             </div>

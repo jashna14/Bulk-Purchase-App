@@ -1,4 +1,4 @@
-# MERN Stack Boilerplate
+# Bulk Purchase App
 
 ## Setup
 
@@ -35,13 +35,13 @@ To run the app, cd into the directory and do:
 npm start
 ```
 
-## Running the boilerplate
+## Running the code
 
 Run Mongo daemon:
 ```
 sudo mongod
 ```
-Mongo will be running on port 27017.
+Mongo will be running on port 4000.
 
 To create a database:
 ```
