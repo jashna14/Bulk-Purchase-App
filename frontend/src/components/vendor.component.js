@@ -156,29 +156,35 @@ export default class Vendor extends Component {
     onSubmit = (e) => {
         e.preventDefault();
 
-        const newProduct = {
-            name: this.state.name,
-            price: this.state.price,
-            quantity: parseInt(this.state.quantity),
-            vendor: this.state.vendor,
-            status: this.state.status,
-            vendor_name: this.state.vendor_name,
-            vendor_rating: this.state.vendor_rating
+        if(this.state.price < 1 | this.state.quantity < 1)
+        {
+            alert("Price or Quantity can't be less than 1")
         }
-
-        axios.post('http://localhost:4000/add_product', newProduct)
-        .then(response => {
-        })
-        .catch(function(error) {
-            alert("Price and Quantity should be integer OR The product already exists OR Some fields are empty")
-        })
-            
-
-        this.setState({
-            name: '',
-            price: '',
-            quantity: ''
-        });
+        else{
+            const newProduct = {
+                name: this.state.name,
+                price: this.state.price,
+                quantity: parseInt(this.state.quantity),
+                vendor: this.state.vendor,
+                status: this.state.status,
+                vendor_name: this.state.vendor_name,
+                vendor_rating: this.state.vendor_rating
+            }
+    
+            axios.post('http://localhost:4000/add_product', newProduct)
+            .then(response => {
+            })
+            .catch(function(error) {
+                alert("Price and Quantity should be integer OR The product already exists OR Some fields are empty")
+            })
+                
+    
+            this.setState({
+                name: '',
+                price: '',
+                quantity: ''
+            });
+        }
     }
 
     render() {
@@ -331,7 +337,7 @@ export default class Vendor extends Component {
                                     <td>{currentProduct.name}</td>
                                     <td>{currentProduct.price}</td>
                                     <td>{currentProduct.quantity}</td>
-                                    <td> <button onClick = {e => this.Dispatch(e,currentProduct._id)}> Dispatch </button> </td>
+                                    <td> <button class = "bt1" onClick = {e => this.Dispatch(e,currentProduct._id)}> Dispatch </button> </td>
                                 </tr>
                             )
                         })
