@@ -153,12 +153,16 @@ export default class Vendor extends Component {
         });
     };
 
+    isInt = function(value) {
+        return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
 
-        if(this.state.price < 1 | this.state.quantity < 1)
+        if(this.state.price < 1 | this.state.quantity < 1 | !this.isInt(this.state.quantity))
         {
-            alert("Price or Quantity can't be less than 1")
+            alert("Price or Quantity can't be less than 1 and quantity should be an integer")
         }
         else{
             const newProduct = {
@@ -175,7 +179,7 @@ export default class Vendor extends Component {
             .then(response => {
             })
             .catch(function(error) {
-                alert("Price and Quantity should be integer OR The product already exists OR Some fields are empty")
+                alert("Price and Quantity should be number OR The product already exists OR Some fields are empty")
             })
                 
     
